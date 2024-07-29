@@ -4,12 +4,10 @@ import { ClickupIncomingIssueHandler } from "./Handlers/ClickupIncomingIssueHand
 export class IncomingTrackingSystemFactory {
   getHandler(
     systemIdentifier: string
-  ): ITrackingSystemIncomingIssueHandler | undefined {
-    switch (systemIdentifier) {
-      case "clickup":
-        return new ClickupIncomingIssueHandler();
-      default:
-        return undefined;
+  ): ITrackingSystemIncomingIssueHandler | null {
+    if (systemIdentifier === "clickup") {
+      return new ClickupIncomingIssueHandler();
     }
+    return null; // Return null instead of undefined if no handler is found
   }
 }

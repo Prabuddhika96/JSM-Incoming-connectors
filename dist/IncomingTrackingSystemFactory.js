@@ -7,7 +7,9 @@ class IncomingTrackingSystemFactory {
         if (systemIdentifier === "clickup") {
             return new ClickupIncomingIssueHandler_1.ClickupIncomingIssueHandler();
         }
-        return null; // Return null instead of undefined if no handler is found
+        else {
+            throw new Error("Invalid service type");
+        }
     }
 }
 exports.IncomingTrackingSystemFactory = IncomingTrackingSystemFactory;

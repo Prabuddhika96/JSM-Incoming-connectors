@@ -2,12 +2,11 @@ import { ITrackingSystemIncomingIssueHandler } from "interfaces/dist/ITrackingSy
 import { ClickupIncomingIssueHandler } from "./Handlers/ClickupIncomingIssueHandler";
 
 export class IncomingTrackingSystemFactory {
-  getHandler(
-    systemIdentifier: string
-  ): ITrackingSystemIncomingIssueHandler | null {
+  getHandler(systemIdentifier: string): ITrackingSystemIncomingIssueHandler {
     if (systemIdentifier === "clickup") {
       return new ClickupIncomingIssueHandler();
+    } else {
+      throw new Error("Invalid service type");
     }
-    return null; // Return null instead of undefined if no handler is found
   }
 }

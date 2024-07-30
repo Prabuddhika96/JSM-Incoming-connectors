@@ -28,32 +28,6 @@ class ClickupIncomingIssueHandler {
                 const clickupTaskDetails = yield (0, http_utils_1.getRequest)(url, headers).then((res) => {
                     return res.json();
                 });
-                //   .then((res: any) => {
-                //     if (!res) {
-                //       throw new Error("Task not found");
-                //     } else {
-                //       const project = req.project;
-                //       const clickupPriorities = this.configReader.readConfigValue(
-                //         project,
-                //         "clickupToJsmPriority"
-                //       );
-                //       const jsmTask: IClientTransformedIssue = {
-                //         id: res.id,
-                //         url: res.url,
-                //         title: res.name,
-                //         description: res.description,
-                //         priority: clickupPriorities[res.priority.priority]
-                //           ? clickupPriorities[res.priority.priority]
-                //           : project.defaultJSMPriority,
-                //       };
-                //       console.log(jsmTask);
-                //       return jsmTask;
-                //     }
-                //   })
-                //   .catch((error: any) => {
-                //     throw new Error(error.message);
-                //   });
-                // return clickupTaskDetails;
                 if (!clickupTaskDetails) {
                     throw new Error("Task not found");
                 }
@@ -67,6 +41,8 @@ class ClickupIncomingIssueHandler {
                     priority: clickupPriorities[clickupTaskDetails.priority.priority]
                         ? clickupPriorities[clickupTaskDetails.priority.priority]
                         : project.defaultJSMPriority,
+                    isCreated: event === "taskCreated" ? true : false,
+                    isUpdated: event === "taskUpdated" ? true : false,
                 };
                 console.log(jsmTask);
                 return jsmTask;

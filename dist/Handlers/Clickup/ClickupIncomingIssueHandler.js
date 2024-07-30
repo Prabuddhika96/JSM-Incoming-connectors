@@ -45,6 +45,7 @@ class ClickupIncomingIssueHandler {
                                 ? clickupPriorities[res.priority.priority]
                                 : project.defaultJSMPriority,
                         };
+                        console.log(jsmTask);
                         return jsmTask;
                     }
                 })

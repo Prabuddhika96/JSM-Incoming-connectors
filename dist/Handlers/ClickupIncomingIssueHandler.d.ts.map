@@ -1,1 +1,0 @@
-{"version":3,"file":"ClickupIncomingIssueHandler.d.ts","sourceRoot":"","sources":["../../src/Handlers/ClickupIncomingIssueHandler.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,OAAO,EAAY,MAAM,SAAS,CAAC;AAC5C,OAAO,EAAE,uBAAuB,EAAE,MAAM,yCAAyC,CAAC;AAClF,OAAO,EAAE,mCAAmC,EAAE,MAAM,wEAAwE,CAAC;AAE7H,qBAAa,2BACX,YAAW,mCAAmC;IAE9C,mBAAmB,CAAC,GAAG,EAAE,OAAO,GAAG,uBAAuB;CAI3D"}

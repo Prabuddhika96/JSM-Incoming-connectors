@@ -31,38 +31,60 @@ export class ClickupIncomingIssueHandler
       const { baseUrl, headers } = this.getClickupHeadersData(req.project);
       const url = `${baseUrl}${clickupEndPoints.clickupTaskUrl}/${taskId}`;
 
-      const clickupTaskDetails = await getRequest(url, headers)
-        .then((res: any) => {
+      const clickupTaskDetails = await getRequest(url, headers).then(
+        (res: any) => {
           return res.json();
-        })
-        .then((res: any) => {
-          if (!res) {
-            throw new Error("Task not found");
-          } else {
-            const project = req.project;
-            const clickupPriorities = this.configReader.readConfigValue(
-              project,
-              "clickupToJsmPriority"
-            );
+        }
+      );
+      //   .then((res: any) => {
+      //     if (!res) {
+      //       throw new Error("Task not found");
+      //     } else {
+      //       const project = req.project;
+      //       const clickupPriorities = this.configReader.readConfigValue(
+      //         project,
+      //         "clickupToJsmPriority"
+      //       );
 
-            const jsmTask: IClientTransformedIssue = {
-              id: res.id,
-              url: res.url,
-              title: res.name,
-              description: res.description,
-              priority: clickupPriorities[res.priority.priority]
-                ? clickupPriorities[res.priority.priority]
-                : project.defaultJSMPriority,
-            };
-            console.log(jsmTask);
-            return jsmTask;
-          }
-        })
-        .catch((error: any) => {
-          throw new Error(error.message);
-        });
+      //       const jsmTask: IClientTransformedIssue = {
+      //         id: res.id,
+      //         url: res.url,
+      //         title: res.name,
+      //         description: res.description,
+      //         priority: clickupPriorities[res.priority.priority]
+      //           ? clickupPriorities[res.priority.priority]
+      //           : project.defaultJSMPriority,
+      //       };
+      //       console.log(jsmTask);
+      //       return jsmTask;
+      //     }
+      //   })
+      //   .catch((error: any) => {
+      //     throw new Error(error.message);
+      //   });
 
-      return clickupTaskDetails;
+      // return clickupTaskDetails;
+
+      if (!clickupTaskDetails) {
+        throw new Error("Task not found");
+      }
+      const project = req.project;
+      const clickupPriorities = this.configReader.readConfigValue(
+        project,
+        "clickupToJsmPriority"
+      );
+
+      const jsmTask: IClientTransformedIssue = {
+        id: clickupTaskDetails.id,
+        url: clickupTaskDetails.url,
+        title: clickupTaskDetails.name,
+        description: clickupTaskDetails.description,
+        priority: clickupPriorities[clickupTaskDetails.priority.priority]
+          ? clickupPriorities[clickupTaskDetails.priority.priority]
+          : project.defaultJSMPriority,
+      };
+      console.log(jsmTask);
+      return jsmTask;
     } catch (e: any) {
       throw new Error(e.message);
     }

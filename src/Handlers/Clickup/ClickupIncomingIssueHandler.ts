@@ -2,6 +2,15 @@ import { Request, Response } from "express";
 import { IClientTransformedIssue } from "interfaces/dist/IClientTransformedIssue";
 import { ITrackingSystemIncomingIssueHandler } from "interfaces/dist/ITrackingSystemIncomingIssueHandler";
 import { IConfigReader } from "interfaces/dist/IConfigReade";
+import { clickupEndPoints } from "./ClickupEndPoints";
+import { getRequest } from "../../utils/http.utils";
+
+declare module "express-serve-static-core" {
+  interface Request {
+    project?: any;
+    webhookEvent?: string;
+  }
+}
 
 export class ClickupIncomingIssueHandler
   implements ITrackingSystemIncomingIssueHandler
@@ -12,10 +21,81 @@ export class ClickupIncomingIssueHandler
     this.configReader = _configReader;
   }
 
-  handleIncomingIssue(req: Request): IClientTransformedIssue {
-    console.log(req.body);
-    const { event, webhook_id: webhookId, task_id: taskId } = req.body;
-    throw new Error("Method not implemented.");
-    // return null;
+  async handleIncomingIssue(req: Request): Promise<IClientTransformedIssue> {
+    try {
+      if (this.validateRequest(req) === false) {
+        throw new Error("Project not found");
+      }
+
+      const { event, task_id: taskId } = req.body;
+      const { baseUrl, headers } = this.getClickupHeadersData(req.project);
+      const url = `${baseUrl}${clickupEndPoints.clickupTaskUrl}/${taskId}`;
+
+      const clickupTaskDetails = await getRequest(url, headers)
+        .then((res: any) => {
+          return res.json();
+        })
+        .then((res: any) => {
+          if (!res) {
+            throw new Error("Task not found");
+          } else {
+            const project = req.project;
+            const clickupPriorities = this.configReader.readConfigValue(
+              project,
+              "clickupToJsmPriority"
+            );
+
+            const jsmTask: IClientTransformedIssue = {
+              id: res.id,
+              url: res.url,
+              title: res.name,
+              description: res.description,
+              priority: clickupPriorities[res.priority.priority]
+                ? clickupPriorities[res.priority.priority]
+                : project.defaultJSMPriority,
+            };
+            return jsmTask;
+          }
+        })
+        .catch((error: any) => {
+          throw new Error(error.message);
+        });
+
+      return clickupTaskDetails;
+    } catch (e: any) {
+      throw new Error(e.message);
+    }
+  }
+
+  validateRequest(req: Request): boolean {
+    const { webhook_id: webhookId } = req.body;
+    const project = this.configReader.getProject("clickupWebhookId", webhookId);
+    if (project) {
+      req.project = project;
+      return true;
+    }
+    return false;
+  }
+
+  getClickupHeadersData(project: any) {
+    const apiKey: string | undefined = this.configReader.readConfigValue(
+      project,
+      "clickupAuthorization"
+    );
+    const baseUrl: string = this.configReader.readConfigValue(
+      project,
+      "clickupApiUrl"
+    );
+
+    if (!apiKey || !baseUrl) {
+      throw new Error("ClickUp credentials not provided");
+    }
+
+    const headers = {
+      "Content-Type": "application/json",
+      Authorization: apiKey,
+    };
+
+    return { baseUrl: baseUrl, headers: headers };
   }
 }

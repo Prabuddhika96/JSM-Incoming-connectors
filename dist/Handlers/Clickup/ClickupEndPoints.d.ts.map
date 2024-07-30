@@ -1,1 +1,1 @@
-{"version":3,"file":"ClickupEndPoints.d.ts","sourceRoot":"","sources":["../../../src/Handlers/Clickup/ClickupEndPoints.ts"],"names":[],"mappings":""}
+{"version":3,"file":"ClickupEndPoints.d.ts","sourceRoot":"","sources":["../../../src/Handlers/Clickup/ClickupEndPoints.ts"],"names":[],"mappings":"AAAA,oBAAY,gBAAgB;IAC1B,WAAW,qBAAqB;IAChC,aAAa,uBAAuB;IACpC,cAAc,iBAAiB;CAChC"}

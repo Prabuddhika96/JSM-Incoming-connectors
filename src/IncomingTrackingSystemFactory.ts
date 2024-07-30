@@ -1,5 +1,5 @@
 import { ITrackingSystemIncomingIssueHandler } from "interfaces/dist/ITrackingSystemIncomingIssueHandler";
-import { ClickupIncomingIssueHandler } from "./Handlers/ClickupIncomingIssueHandler";
+import { ClickupIncomingIssueHandler } from "./Handlers/Clickup/ClickupIncomingIssueHandler";
 
 export class IncomingTrackingSystemFactory {
   getHandler(systemIdentifier: string): ITrackingSystemIncomingIssueHandler {
